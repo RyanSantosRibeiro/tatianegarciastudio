@@ -95,8 +95,8 @@
 
     /* Imagem de fundo */
     .post .p-bgimg, .post .p-shade { position: absolute; inset: 0; }
-    .post .p-bgimg { background-size: cover; background-repeat: no-repeat; }
-    .post .p-shade { background: var(--p-bg); }
+    .post .p-bgimg { width: 100%; height: 100%; display: block; pointer-events: none; }
+    .post .p-shade { background: var(--p-bg); pointer-events: none; }
     .post.has-img > :not(.p-bgimg):not(.p-shade) { position: relative; z-index: 1; }
     .post.has-img .p-body, .post.has-img .p-foot { color: var(--p-ink); }
     .post.has-img.t-festa .frame { position: absolute; }
@@ -375,7 +375,7 @@
     };
 
     var KEY = "tg-posts-v1";
-    var bgImg = "";
+    var bgImgEl = null, bgCropped = "";
     var state = { tpl: "agenda", fmt: "feed", bg: "dark", bgShade: 70, bgPos: 50, data: {} };
     try { var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) state = Object.assign(state, s); } catch (e) {}
     if (!TEMPLATES[state.tpl]) state.tpl = "agenda";
@@ -394,19 +394,50 @@
     bgShade.value = state.bgShade; bgShadeOut.textContent = state.bgShade + "%";
     bgPos.value = state.bgPos; bgPosOut.textContent = state.bgPos + "%";
 
+    function updateBgCrop() {
+      if (!bgImgEl) { bgCropped = ""; return; }
+      var w = 1080, h = state.fmt === "story" ? 1920 : 1350;
+      var iw = bgImgEl.naturalWidth || bgImgEl.width, ih = bgImgEl.naturalHeight || bgImgEl.height;
+      if (!iw || !ih) { bgCropped = ""; return; }
+      var c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      var scale = Math.max(w / iw, h / ih);
+      var sw = w / scale, sh = h / scale;
+      var sx = (iw - sw) * 0.5;
+      var sy = (ih - sh) * (state.bgPos / 100);
+      c.getContext("2d").drawImage(bgImgEl, sx, sy, sw, sh, 0, 0, w, h);
+      bgCropped = c.toDataURL("image/jpeg", 0.88);
+    }
+
     bgFile.addEventListener("change", function () {
       var f = bgFile.files && bgFile.files[0];
       if (!f) return;
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        bgImg = ev.target.result;
+      var url = URL.createObjectURL(f);
+      var img = new Image();
+      img.onload = function () {
+        URL.revokeObjectURL(url);
+        var max = 2160, iw = img.naturalWidth, ih = img.naturalHeight;
+        if (iw > max || ih > max) {
+          var r = Math.min(max / iw, max / ih);
+          var tmp = document.createElement("canvas");
+          tmp.width = Math.round(iw * r); tmp.height = Math.round(ih * r);
+          tmp.getContext("2d").drawImage(img, 0, 0, tmp.width, tmp.height);
+          bgImgEl = tmp;
+        } else {
+          bgImgEl = img;
+        }
+        updateBgCrop();
         bgbox.setAttribute("data-has-img", "true");
         render();
       };
-      reader.readAsDataURL(f);
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        status.textContent = "Não foi possível carregar essa foto. Tente outra imagem (JPG ou PNG).";
+      };
+      img.src = url;
     });
     bgRemove.addEventListener("click", function () {
-      bgImg = ""; bgFile.value = "";
+      bgImgEl = null; bgCropped = ""; bgFile.value = "";
       bgbox.setAttribute("data-has-img", "false");
       render();
     });
@@ -418,6 +449,7 @@
     bgPos.addEventListener("input", function () {
       state.bgPos = Number(bgPos.value);
       bgPosOut.textContent = state.bgPos + "%";
+      updateBgCrop();
       save(); render();
     });
 
@@ -463,10 +495,10 @@
 
     function makePost() {
       var el = document.createElement("div");
-      el.className = "post t-" + state.tpl + (state.fmt === "story" ? " is-story" : "") + (state.bg === "light" ? " is-light" : "") + (bgImg ? " has-img" : "");
+      el.className = "post t-" + state.tpl + (state.fmt === "story" ? " is-story" : "") + (state.bg === "light" ? " is-light" : "") + (bgCropped ? " has-img" : "");
       var bgHtml = "";
-      if (bgImg) {
-        bgHtml = '<div class="p-bgimg" style="background-image:url(\'' + bgImg + '\');background-position:center ' + state.bgPos + '%"></div>' +
+      if (bgCropped) {
+        bgHtml = '<img class="p-bgimg" src="' + bgCropped + '" alt="">' +
                  '<div class="p-shade" style="opacity:' + (state.bgShade / 100) + '"></div>';
       }
       el.innerHTML = bgHtml + TEMPLATES[state.tpl].render(dataFor(state.tpl), state.bg);
@@ -482,7 +514,7 @@
       document.querySelectorAll("[data-bg]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === state.bg)); });
       inner.innerHTML = ""; inner.appendChild(makePost()); fit();
     }
-    document.querySelectorAll("[data-fmt]").forEach(function (b) { b.addEventListener("click", function () { state.fmt = b.dataset.fmt; save(); render(); }); });
+    document.querySelectorAll("[data-fmt]").forEach(function (b) { b.addEventListener("click", function () { state.fmt = b.dataset.fmt; updateBgCrop(); save(); render(); }); });
     document.querySelectorAll("[data-bg]").forEach(function (b) { b.addEventListener("click", function () { state.bg = b.dataset.bg; save(); render(); }); });
     document.getElementById("reset").addEventListener("click", function () { delete state.data[state.tpl]; save(); buildForm(); render(); status.textContent = "Texto original restaurado."; });
     if (window.ResizeObserver) new ResizeObserver(fit).observe(stage); else window.addEventListener("resize", fit);
@@ -503,11 +535,34 @@
       ["dl-png", "dl-pdf"].forEach(function (id) { document.getElementById(id).disabled = on; });
       status.textContent = msg || "";
     }
+    function saveBlob(blob, name, label) {
+      var file = typeof File === "function" ? new File([blob], name, { type: blob.type }) : null;
+      var isTouch = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (isTouch && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+        return navigator.share({ files: [file], title: name }).then(function () {
+          busy(false, label + " pronto.");
+        }, function (err) {
+          if (err && err.name === "AbortError") { busy(false, ""); return; }
+          triggerDownload(blob, name, label);
+        });
+      }
+      triggerDownload(blob, name, label);
+    }
+    function triggerDownload(blob, name, label) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = name; a.style.display = "none";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+      busy(false, label + " baixado.");
+    }
     document.getElementById("dl-png").addEventListener("click", function () {
       busy(true, "Gerando imagem…");
       capture().then(function (c) {
-        var a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download = fileName("png"); a.click();
-        busy(false, "PNG baixado (1080 × " + c.height + ").");
+        c.toBlob(function (blob) {
+          if (!blob) { busy(false, "Não foi possível gerar a imagem. Tente de novo."); return; }
+          saveBlob(blob, fileName("png"), "PNG (1080 × " + c.height + ")");
+        }, "image/png");
       }).catch(function (err) {
         console.error("Erro ao gerar PNG:", err);
         busy(false, "Não foi possível gerar a imagem. Tente de novo.");
@@ -518,8 +573,8 @@
       capture().then(function (c) {
         var pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "px", format: [c.width, c.height], hotfixes: ["px_scaling"] });
         pdf.addImage(c.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, c.width, c.height);
-        pdf.save(fileName("pdf"));
-        busy(false, "PDF baixado.");
+        var blob = pdf.output("blob");
+        saveBlob(blob, fileName("pdf"), "PDF");
       }).catch(function (err) {
         console.error("Erro ao gerar PDF:", err);
         busy(false, "Não foi possível gerar o PDF. Tente de novo.");
