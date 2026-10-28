@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Templates de Posts · Tatiane Garcia Studio</title>
+  <link rel="icon" href="../assets/logo-preto.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .studio { display: grid; grid-template-columns: 380px 1fr; gap: var(--s-6); align-items: start; padding: var(--s-6) 0 var(--s-8); }
+    @media (max-width: 900px) { .studio { grid-template-columns: 1fr; } }
+    .panel { display: grid; gap: var(--s-4); }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+    .tab { font: 500 .75rem/1.3 var(--font-body); letter-spacing: .12em; text-transform: uppercase; padding: 12px; min-height: 48px;
+      border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; text-align: left; }
+    .tab[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+    .field { display: grid; gap: 6px; }
+    .field label, .group-label { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 500; color: var(--gold); }
+    .field input, .field textarea { font: 400 1rem/1.5 var(--font-body); color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+      padding: 10px 12px; width: 100%; border-radius: 0; }
+    .field input:focus, .field textarea:focus { outline: 2px solid var(--gold); outline-offset: 0; border-color: var(--gold); }
+    .field textarea { min-height: 150px; resize: vertical; }
+    .field small { color: var(--ink-soft); font-size: .8125rem; }
+    .seg { display: inline-flex; border: 1px solid var(--line); }
+    .seg button { font: 500 .75rem/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase; padding: 12px 16px; min-height: 44px;
+      background: transparent; color: var(--ink); border: 0; cursor: pointer; }
+    .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    .row2 { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+    .actions { display: flex; flex-wrap: wrap; gap: var(--s-3); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+    .status { min-height: 1.5em; }
+
+    .preview { position: sticky; top: 100px; }
+    .stage { width: 100%; max-width: 560px; margin: 0 auto; overflow: hidden; background: var(--paper-2); box-shadow: 0 0 0 1px var(--line); }
+    .stage__inner { transform-origin: 0 0; }
+    @media (max-width: 900px) { .preview { position: static; order: -1; } }
+
+    /* ===== Post artboards (fixed px, exported 1:1) ===== */
+    .post { width: 1080px; height: 1350px; position: relative; overflow: hidden; font-family: "Jost", sans-serif;
+      --p-bg: #141210; --p-ink: #f3eee6; --p-soft: #b8afa3; --p-gold: #c9a46a; --p-line: rgba(243,238,230,.18);
+      background: var(--p-bg); color: var(--p-ink); display: flex; flex-direction: column; padding: 96px 100px; }
+    .post.is-story { height: 1920px; padding: 220px 100px 260px; }
+    .post.is-light { --p-bg: #faf7f2; --p-ink: #141210; --p-soft: #5a534b; --p-gold: #86642f; --p-line: #e2d9cb; }
+    .post .p-logo { width: 280px; align-self: center; margin-bottom: 24px; }
+    .post .p-label { font-size: 26px; letter-spacing: .32em; text-transform: uppercase; color: var(--p-gold); font-weight: 500; text-align: center; }
+    .post .p-serif { font-family: "Cormorant Garamond", serif; font-weight: 500; line-height: 1; }
+    .post .p-body { font-size: 34px; line-height: 1.5; color: var(--p-soft); text-align: center; white-space: pre-line; }
+    .post .p-rule { width: 120px; height: 2px; background: var(--p-gold); align-self: center; }
+    .post .p-cta { align-self: center; font-size: 26px; letter-spacing: .24em; text-transform: uppercase; font-weight: 500;
+      border: 2px solid var(--p-ink); border-radius: 999px; padding: 26px 48px; }
+    .post .p-foot { font-size: 24px; letter-spacing: .2em; text-transform: uppercase; color: var(--p-soft); text-align: center; }
+    .post > * { flex-shrink: 0; }
+    .post .grow { flex: 1 1 auto; min-height: 0; }
+    .post .center { display: flex; flex-direction: column; justify-content: center; gap: 44px; }
+
+    /* Agenda aberta */
+    .t-agenda .big { font-size: 210px; font-style: italic; color: var(--p-gold); text-align: center; line-height: .9; }
+    .t-agenda .sub { font-size: 84px; text-align: center; }
+    .t-agenda .date { display: flex; align-items: center; justify-content: center; gap: 28px; border-top: 2px solid var(--p-line);
+      border-bottom: 2px solid var(--p-line); padding: 34px 0; }
+    .t-agenda .date b { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 64px; line-height: 1; }
+    .t-agenda .date span { font-size: 24px; letter-spacing: .24em; text-transform: uppercase; color: var(--p-soft); max-width: 260px; line-height: 1.4; }
+
+    /* Horarios */
+    .t-horarios .title { font-size: 96px; text-align: center; }
+    .t-horarios .title em { color: var(--p-gold); }
+    .t-horarios ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--p-line); }
+    .t-horarios li { display: flex; justify-content: space-between; align-items: baseline; gap: 32px; padding: 22px 8px; border-bottom: 2px solid var(--p-line); font-size: 36px; }
+    .t-horarios li b { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 48px; white-space: nowrap; }
+    .t-horarios li span { color: var(--p-soft); text-align: right; }
+    .t-horarios li.full span { text-decoration: line-through; opacity: .6; }
+
+    /* Aviso */
+    .t-aviso .title { font-size: 128px; text-align: center; line-height: 1.02; }
+    .t-aviso .title em { color: var(--p-gold); }
+
+    /* Funcionamento */
+    .t-func .day { font-size: 120px; text-align: center; font-style: italic; color: var(--p-gold); line-height: 1; }
+    .t-func .status { font-size: 76px; text-align: center; }
+    .t-func .p-hours { display: grid; gap: 0; border-top: 2px solid var(--p-line); }
+    .t-func .p-hours div { display: flex; justify-content: space-between; padding: 24px 8px; border-bottom: 2px solid var(--p-line); font-size: 34px; }
+    .t-func .p-hours div span:last-child { color: var(--p-soft); }
+
+    /* Datas comemorativas */
+    .t-festa .frame { position: absolute; inset: 40px; border: 2px solid var(--p-gold); opacity: .55; pointer-events: none; }
+    .t-festa .greet { font-size: 168px; text-align: center; line-height: .95; }
+    .t-festa .greet em { color: var(--p-gold); }
+
+    /* Imagem de fundo */
+    .post .p-bgimg, .post .p-shade { position: absolute; inset: 0; }
+    .post .p-bgimg { background-size: cover; background-repeat: no-repeat; }
+    .post .p-shade { background: var(--p-bg); }
+    .post.has-img > :not(.p-bgimg):not(.p-shade) { position: relative; z-index: 1; }
+    .post.has-img .p-body, .post.has-img .p-foot { color: var(--p-ink); }
+    .post.has-img.t-festa .frame { position: absolute; }
+
+    .bgbox { display: grid; gap: var(--s-3); padding: var(--s-4); border: 1px dashed var(--line); }
+    .bgbox__row { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+    .bgbox input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .bgbox input[type="file"]:focus-visible + label { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .bgbox .range { display: grid; gap: 4px; }
+    .bgbox .range label { font-size: .8125rem; color: var(--ink-soft); display: flex; justify-content: space-between; }
+    .bgbox input[type="range"] { width: 100%; accent-color: var(--gold); }
+    .bgbox[data-has-img="false"] .when-img { display: none; }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+    .chip { font: 500 .75rem/1 var(--font-body); letter-spacing: .08em; padding: 10px 14px; min-height: 40px; border: 1px solid var(--line);
+      border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer; }
+    .chip:hover { border-color: var(--ink); }
+
+    /* Offscreen export host */
+    .export-host { position: fixed; left: -20000px; top: 0; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+  <header class="header">
+    <div class="wrap header__in">
+      <a class="logo" href="../" aria-label="Tatiane Garcia Studio de Beleza — voltar ao site">
+        <img class="logo--light" src="../assets/logo-preto.png" alt="" width="809" height="415">
+        <img class="logo--dark" src="../assets/logo-branco.png" alt="" width="809" height="415">
+      </a>
+      <nav id="nav" class="nav" aria-label="Principal">
+        <a href="../">Site</a>
+        <a href="../brand/">Marca</a>
+        <a href="./" aria-current="page">Posts</a>
+      </nav>
+      <div class="header__tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Alternar tema">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <button class="icon-btn menu-btn" type="button" data-menu aria-controls="nav" aria-expanded="false" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="wrap">
+    <div style="padding-top:48px">
+      <span class="label">Uso interno</span>
+      <h1 class="h1" style="margin-top:16px">Templates de posts</h1>
+      <p class="lead" style="margin-top:16px">Escolha o modelo, escreva o texto e baixe. PNG para postar no Instagram, PDF para enviar ou imprimir.</p>
+    </div>
+
+    <div class="studio">
+      <div class="panel">
+        <div>
+          <div class="group-label" id="lbl-model" style="margin-bottom:8px">Modelo</div>
+          <div class="tabs" role="group" aria-labelledby="lbl-model" id="tabs"></div>
+        </div>
+        <div class="row2">
+          <div>
+            <div class="group-label" id="lbl-fmt" style="margin-bottom:8px">Formato</div>
+            <div class="seg" role="group" aria-labelledby="lbl-fmt">
+              <button type="button" data-fmt="feed" aria-pressed="true">Feed 4:5</button>
+              <button type="button" data-fmt="story" aria-pressed="false">Story 9:16</button>
+            </div>
+          </div>
+          <div>
+            <div class="group-label" id="lbl-bg" style="margin-bottom:8px">Fundo</div>
+            <div class="seg" role="group" aria-labelledby="lbl-bg">
+              <button type="button" data-bg="dark" aria-pressed="true">Escuro</button>
+              <button type="button" data-bg="light" aria-pressed="false">Claro</button>
+            </div>
+          </div>
+        </div>
+        <div class="bgbox" id="bgbox" data-has-img="false">
+          <div class="group-label">Imagem de fundo (opcional)</div>
+          <div class="bgbox__row">
+            <input type="file" id="bg-file" accept="image/*">
+            <label for="bg-file" class="btn btn--ghost btn--sm">Escolher foto</label>
+            <button type="button" class="btn btn--ghost btn--sm when-img" id="bg-remove">Remover</button>
+          </div>
+          <div class="range when-img">
+            <label for="bg-shade"><span>Escurecer a foto</span><output id="bg-shade-out">70%</output></label>
+            <input type="range" id="bg-shade" min="20" max="95" step="5" value="70">
+          </div>
+          <div class="range when-img">
+            <label for="bg-pos"><span>Posição vertical</span><output id="bg-pos-out">50%</output></label>
+            <input type="range" id="bg-pos" min="0" max="100" step="5" value="50">
+          </div>
+          <p class="small">A foto fica só neste navegador. Use “Fundo: Escuro” para fotos escuras e “Claro” para fotos claras.</p>
+        </div>
+        <div class="chips" id="presets" hidden></div>
+        <form id="fields" class="panel" onsubmit="return false"></form>
+        <div class="actions">
+          <button class="btn btn--primary" type="button" id="dl-png">Baixar PNG</button>
+          <button class="btn btn--ghost" type="button" id="dl-pdf">Baixar PDF</button>
+          <button class="btn btn--ghost" type="button" id="reset">Restaurar texto</button>
+        </div>
+        <p class="small status" id="status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="preview">
+        <div class="stage" id="stage" aria-label="Pré-visualização do post"><div class="stage__inner" id="stage-inner"></div></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="export-host" id="export-host" aria-hidden="true"></div>
+
+  <script>
+  (function () {
+    var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+    // *texto* vira itálico dourado
+    var em = function (s) { return esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>"); };
+    var logo = function (bg) { return '<img class="p-logo" src="../assets/' + (bg === "light" ? "logo-preto" : "logo-branco") + '.png" alt="">'; };
+
+    var TEMPLATES = {
+      agenda: {
+        name: "Agenda aberta",
+        fields: [
+          { k: "label", l: "Rótulo", v: "Agenda de" },
+          { k: "mes", l: "Mês / período", v: "Dezembro" },
+          { k: "sub", l: "Complemento", v: "está aberta" },
+          { k: "dia", l: "Data de abertura", v: "19 de outubro" },
+          { k: "diaTxt", l: "Texto ao lado da data", v: "Você já pode agendar seu horário" },
+          { k: "texto", l: "Texto", t: "area", v: "Antecipe-se e garanta seu horário para brilhar nas festas de fim de ano." },
+          { k: "cta", l: "Chamada", v: "Agende pelo WhatsApp" }
+        ],
+        render: function (d, bg) {
+          return logo(bg) +
+            '<div class="grow center">' +
+              '<div class="p-label">' + esc(d.label) + '</div>' +
+              '<div class="p-serif big">' + esc(d.mes) + '</div>' +
+              '<div class="p-serif sub">' + esc(d.sub) + '</div>' +
+              '<div class="date"><b>' + esc(d.dia) + '</b><span>' + esc(d.diaTxt) + '</span></div>' +
+              '<p class="p-body">' + esc(d.texto) + '</p>' +
+            '</div>' +
+            '<div class="p-cta">' + esc(d.cta) + '</div>';
+        }
+      },
+      horarios: {
+        name: "Horários da semana",
+        fields: [
+          { k: "label", l: "Rótulo", v: "Esta semana" },
+          { k: "titulo", l: "Título", h: "Use *asteriscos* para destacar em dourado", v: "Horários *disponíveis*" },
+          { k: "lista", l: "Horários (um por linha: Dia | horários)", t: "area", h: "Comece a linha com ~ para riscar (lotado).", v: "Terça 04 | 10h · 14h · 16h\nQuarta 05 | 09h · 15h\n~Quinta 06 | Lotado\nSexta 07 | 11h · 17h\nSábado 08 | 09h · 10h30" },
+          { k: "cta", l: "Chamada", v: "Reserve pelo WhatsApp" }
+        ],
+        render: function (d, bg) {
+          var items = String(d.lista).split("\n").filter(function (l) { return l.trim(); }).map(function (l) {
+            var full = /^\s*~/.test(l); l = l.replace(/^\s*~/, "");
+            var p = l.split("|");
+            return '<li' + (full ? ' class="full"' : '') + '><b>' + esc((p[0] || "").trim()) + '</b><span>' + esc((p[1] || "").trim()) + '</span></li>';
+          }).join("");
+          return logo(bg) +
+            '<div class="grow center">' +
+              '<div class="p-label">' + esc(d.label) + '</div>' +
+              '<div class="p-serif title">' + em(d.titulo) + '</div>' +
+              '<ul>' + items + '</ul>' +
+            '</div>' +
+            '<div class="p-cta">' + esc(d.cta) + '</div>';
+        }
+      },
+      aviso: {
+        name: "Aviso",
+        fields: [
+          { k: "label", l: "Rótulo", v: "Aviso importante" },
+          { k: "titulo", l: "Título", h: "Use *asteriscos* para destacar em dourado", v: "Novidade no *studio*" },
+          { k: "texto", l: "Texto", t: "area", v: "Escreva aqui o recado para as clientes.\nPode ter mais de uma linha." },
+          { k: "assina", l: "Assinatura", v: "Com carinho, Tatiane" }
+        ],
+        render: function (d, bg) {
+          return logo(bg) +
+            '<div class="grow center">' +
+              '<div class="p-label">' + esc(d.label) + '</div>' +
+              '<div class="p-serif title">' + em(d.titulo) + '</div>' +
+              '<div class="p-rule"></div>' +
+              '<p class="p-body">' + esc(d.texto) + '</p>' +
+            '</div>' +
+            '<div class="p-foot">' + esc(d.assina) + '</div>';
+        }
+      },
+      func: {
+        name: "Feriado / horário especial",
+        fields: [
+          { k: "label", l: "Rótulo", v: "Horário especial" },
+          { k: "dia", l: "Data", v: "15 de novembro" },
+          { k: "status", l: "Situação", v: "Studio fechado" },
+          { k: "lista", l: "Horários (um por linha: Dia | horário)", t: "area", v: "Sexta 14 | 09h às 18h\nSábado 15 | Fechado\nTerça 18 | Voltamos 09h" },
+          { k: "rodape", l: "Rodapé", v: "Agendamentos pelo WhatsApp" }
+        ],
+        render: function (d, bg) {
+          var rows = String(d.lista).split("\n").filter(function (l) { return l.trim(); }).map(function (l) {
+            var p = l.split("|"); return '<div><span>' + esc((p[0] || "").trim()) + '</span><span>' + esc((p[1] || "").trim()) + '</span></div>';
+          }).join("");
+          return logo(bg) +
+            '<div class="grow center">' +
+              '<div class="p-label">' + esc(d.label) + '</div>' +
+              '<div class="p-serif day">' + esc(d.dia) + '</div>' +
+              '<div class="p-serif status">' + esc(d.status) + '</div>' +
+              '<div class="p-hours">' + rows + '</div>' +
+            '</div>' +
+            '<div class="p-foot">' + esc(d.rodape) + '</div>';
+        }
+      },
+      festa: {
+        name: "Data comemorativa",
+        presets: [
+          {
+            name: "Feliz Natal",
+            d: {
+              label: "Boas festas",
+              saudacao: "Feliz *Natal*",
+              texto: "Que a noite seja repleta de paz, amor e momentos inesquecíveis ao lado de quem você ama.",
+              assina: "Com carinho, Tatiane Garcia Studio"
+            }
+          },
+          {
+            name: "Ano Novo",
+            d: {
+              label: "Boas festas",
+              saudacao: "Feliz *Ano Novo*",
+              texto: "Obrigada por fazer parte da nossa história. Que o novo ano traga ainda mais brilho, saúde e conquistas!",
+              assina: "Com carinho, Tatiane Garcia Studio"
+            }
+          },
+          {
+            name: "Dia da Mulher",
+            d: {
+              label: "8 de março",
+              saudacao: "Feliz Dia da *Mulher*",
+              texto: "Para todas as mulheres que inspiram, transformam e brilham todos os dias com a sua própria essência.",
+              assina: "Com admiração, Tatiane Garcia Studio"
+            }
+          },
+          {
+            name: "Dia das Mães",
+            d: {
+              label: "Homenagem especial",
+              saudacao: "Feliz Dia das *Mães*",
+              texto: "A beleza mais pura está no cuidado e no amor de quem se dedica todos os dias. Parabéns a todas as mães!",
+              assina: "Com carinho, Tatiane Garcia Studio"
+            }
+          },
+          {
+            name: "Páscoa",
+            d: {
+              label: "Renovação",
+              saudacao: "Feliz *Páscoa*",
+              texto: "Desejamos um domingo doce, abençoado e cheio de paz para você e toda a sua família.",
+              assina: "Com carinho, Tatiane Garcia Studio"
+            }
+          }
+        ],
+        fields: [
+          { k: "label", l: "Rótulo", v: "Boas festas" },
+          { k: "saudacao", l: "Saudação", h: "Use *asteriscos* para destacar em dourado", v: "Feliz *Natal*" },
+          { k: "texto", l: "Mensagem", t: "area", v: "Que a noite seja repleta de paz, amor e momentos inesquecíveis ao lado de quem você ama." },
+          { k: "assina", l: "Assinatura", v: "Com carinho, Tatiane Garcia Studio" }
+        ],
+        render: function (d, bg) {
+          return '<div class="frame"></div>' +
+            logo(bg) +
+            '<div class="grow center">' +
+              '<div class="p-label">' + esc(d.label) + '</div>' +
+              '<div class="p-serif greet">' + em(d.saudacao) + '</div>' +
+              '<div class="p-rule"></div>' +
+              '<p class="p-body">' + esc(d.texto) + '</p>' +
+            '</div>' +
+            '<div class="p-foot">' + esc(d.assina) + '</div>';
+        }
+      }
+    };
+
+    var KEY = "tg-posts-v1";
+    var bgImg = "";
+    var state = { tpl: "agenda", fmt: "feed", bg: "dark", bgShade: 70, bgPos: 50, data: {} };
+    try { var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) state = Object.assign(state, s); } catch (e) {}
+    if (!TEMPLATES[state.tpl]) state.tpl = "agenda";
+    var save = function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+    var dataFor = function (id) {
+      var d = {}; TEMPLATES[id].fields.forEach(function (f) { d[f.k] = f.v; });
+      return Object.assign(d, state.data[id] || {});
+    };
+
+    var tabs = document.getElementById("tabs"), form = document.getElementById("fields"), presetsEl = document.getElementById("presets");
+    var stage = document.getElementById("stage"), inner = document.getElementById("stage-inner"), status = document.getElementById("status");
+    var bgbox = document.getElementById("bgbox"), bgFile = document.getElementById("bg-file"), bgRemove = document.getElementById("bg-remove");
+    var bgShade = document.getElementById("bg-shade"), bgShadeOut = document.getElementById("bg-shade-out");
+    var bgPos = document.getElementById("bg-pos"), bgPosOut = document.getElementById("bg-pos-out");
+
+    bgShade.value = state.bgShade; bgShadeOut.textContent = state.bgShade + "%";
+    bgPos.value = state.bgPos; bgPosOut.textContent = state.bgPos + "%";
+
+    bgFile.addEventListener("change", function () {
+      var f = bgFile.files && bgFile.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        bgImg = ev.target.result;
+        bgbox.setAttribute("data-has-img", "true");
+        render();
+      };
+      reader.readAsDataURL(f);
+    });
+    bgRemove.addEventListener("click", function () {
+      bgImg = ""; bgFile.value = "";
+      bgbox.setAttribute("data-has-img", "false");
+      render();
+    });
+    bgShade.addEventListener("input", function () {
+      state.bgShade = Number(bgShade.value);
+      bgShadeOut.textContent = state.bgShade + "%";
+      save(); render();
+    });
+    bgPos.addEventListener("input", function () {
+      state.bgPos = Number(bgPos.value);
+      bgPosOut.textContent = state.bgPos + "%";
+      save(); render();
+    });
+
+    Object.keys(TEMPLATES).forEach(function (id) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "tab"; b.dataset.tpl = id; b.textContent = TEMPLATES[id].name;
+      b.addEventListener("click", function () { state.tpl = id; save(); buildForm(); render(); });
+      tabs.appendChild(b);
+    });
+
+    function buildForm() {
+      [].forEach.call(tabs.children, function (b) { b.setAttribute("aria-pressed", String(b.dataset.tpl === state.tpl)); });
+      var tpl = TEMPLATES[state.tpl];
+      if (tpl.presets && tpl.presets.length) {
+        presetsEl.hidden = false;
+        presetsEl.innerHTML = tpl.presets.map(function (p, i) {
+          return '<button type="button" class="chip" data-preset="' + i + '">' + esc(p.name) + '</button>';
+        }).join("");
+      } else {
+        presetsEl.hidden = true;
+        presetsEl.innerHTML = "";
+      }
+      var d = dataFor(state.tpl);
+      form.innerHTML = tpl.fields.map(function (f) {
+        var id = "f-" + f.k, hint = f.h ? '<small id="' + id + '-h">' + esc(f.h) + '</small>' : "";
+        var aria = f.h ? ' aria-describedby="' + id + '-h"' : "";
+        var input = f.t === "area"
+          ? '<textarea id="' + id + '" name="' + f.k + '"' + aria + '>' + esc(d[f.k]) + '</textarea>'
+          : '<input id="' + id + '" name="' + f.k + '" value="' + esc(d[f.k]) + '"' + aria + '>';
+        return '<div class="field"><label for="' + id + '">' + esc(f.l) + '</label>' + input + hint + '</div>';
+      }).join("");
+    }
+    presetsEl.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-preset]"); if (!b) return;
+      var p = (TEMPLATES[state.tpl].presets || [])[Number(b.dataset.preset)]; if (!p) return;
+      state.data[state.tpl] = Object.assign({}, p.d);
+      save(); buildForm(); render();
+    });
+    form.addEventListener("input", function (e) {
+      var t = e.target; if (!t.name) return;
+      state.data[state.tpl] = state.data[state.tpl] || {};
+      state.data[state.tpl][t.name] = t.value; save(); render();
+    });
+
+    function makePost() {
+      var el = document.createElement("div");
+      el.className = "post t-" + state.tpl + (state.fmt === "story" ? " is-story" : "") + (state.bg === "light" ? " is-light" : "") + (bgImg ? " has-img" : "");
+      var bgHtml = "";
+      if (bgImg) {
+        bgHtml = '<div class="p-bgimg" style="background-image:url(\'' + bgImg + '\');background-position:center ' + state.bgPos + '%"></div>' +
+                 '<div class="p-shade" style="opacity:' + (state.bgShade / 100) + '"></div>';
+      }
+      el.innerHTML = bgHtml + TEMPLATES[state.tpl].render(dataFor(state.tpl), state.bg);
+      return el;
+    }
+    function fit() {
+      var post = inner.firstChild; if (!post) return;
+      var h = state.fmt === "story" ? 1920 : 1350, scale = stage.clientWidth / 1080;
+      inner.style.transform = "scale(" + scale + ")"; stage.style.height = (h * scale) + "px";
+    }
+    function render() {
+      document.querySelectorAll("[data-fmt]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.fmt === state.fmt)); });
+      document.querySelectorAll("[data-bg]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === state.bg)); });
+      inner.innerHTML = ""; inner.appendChild(makePost()); fit();
+    }
+    document.querySelectorAll("[data-fmt]").forEach(function (b) { b.addEventListener("click", function () { state.fmt = b.dataset.fmt; save(); render(); }); });
+    document.querySelectorAll("[data-bg]").forEach(function (b) { b.addEventListener("click", function () { state.bg = b.dataset.bg; save(); render(); }); });
+    document.getElementById("reset").addEventListener("click", function () { delete state.data[state.tpl]; save(); buildForm(); render(); status.textContent = "Texto original restaurado."; });
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(stage); else window.addEventListener("resize", fit);
+
+    function fileName(ext) {
+      var d = new Date(), p = function (n) { return String(n).padStart(2, "0"); };
+      return "post-" + state.tpl + "-" + state.fmt + "-" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "." + ext;
+    }
+    function capture() {
+      var host = document.getElementById("export-host"); host.innerHTML = "";
+      var el = makePost(); host.appendChild(el);
+      var imgs = [].slice.call(el.querySelectorAll("img")).map(function (i) { return i.complete ? Promise.resolve() : new Promise(function (r) { i.onload = i.onerror = r; }); });
+      return Promise.all([document.fonts ? document.fonts.ready : null].concat(imgs)).then(function () {
+        return html2canvas(el, { scale: 1, backgroundColor: null, useCORS: true, logging: false });
+      }).then(function (c) { host.innerHTML = ""; return c; });
+    }
+    function busy(on, msg) {
+      ["dl-png", "dl-pdf"].forEach(function (id) { document.getElementById(id).disabled = on; });
+      status.textContent = msg || "";
+    }
+    document.getElementById("dl-png").addEventListener("click", function () {
+      busy(true, "Gerando imagem…");
+      capture().then(function (c) {
+        var a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download = fileName("png"); a.click();
+        busy(false, "PNG baixado (1080 × " + c.height + ").");
+      }).catch(function () { busy(false, "Não foi possível gerar a imagem. Tente de novo."); });
+    });
+    document.getElementById("dl-pdf").addEventListener("click", function () {
+      busy(true, "Gerando PDF…");
+      capture().then(function (c) {
+        var pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "px", format: [c.width, c.height], hotfixes: ["px_scaling"] });
+        pdf.addImage(c.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, c.width, c.height);
+        pdf.save(fileName("pdf"));
+        busy(false, "PDF baixado.");
+      }).catch(function () { busy(false, "Não foi possível gerar o PDF. Tente de novo."); });
+    });
+
+    buildForm(); render();
+    if (document.fonts) document.fonts.ready.then(render);
+  })();
+  </script>
+</body>
+</html>

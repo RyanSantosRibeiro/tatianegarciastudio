@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual da Marca · Tatiane Garcia Studio</title>
+  <meta name="description" content="Logo, cores, tipografia, tom de voz e aplicações da marca Tatiane Garcia Studio de Beleza.">
+  <link rel="icon" href="../assets/logo-preto.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/site.js"></script>
+  <style>
+    .tiles > *, .donts > *, .apps > *, .swatches > *, .type-grid > *, .comp > *, .dl > *, .rules > *, .voice > *, .say > * { min-width: 0; }
+    .tile__art, .dont__art, .hero-logo { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+    .tile__art img, .dont__art img, .hero-logo img, .clear__box img { height: auto; }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: var(--s-6); padding-top: var(--s-4); border-top: 1px solid var(--line); list-style: none; padding-left: 0; }
+    .toc a { font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; text-decoration: none; font-weight: 500; }
+    .toc a:hover { color: var(--gold); }
+    .toc span { color: var(--gold); margin-right: 6px; font-family: var(--font-display); font-style: italic; letter-spacing: 0; font-size: 1rem; }
+
+    .hero-logo { margin-top: var(--s-7); background: #fff; display: grid; place-items: center; padding: clamp(32px, 8vw, 96px); border: 1px solid var(--line); }
+    .hero-logo img { width: min(640px, 100%); }
+
+    .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); }
+    .tile { display: grid; grid-template-rows: 1fr auto; border: 1px solid var(--line); }
+    .tile__art { aspect-ratio: 4 / 3; display: grid; place-items: center; padding: 12%; }
+    .tile__art img { width: 100%; }
+    .tile__meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid var(--line); font-size: .875rem; background: var(--paper); }
+    .tile__meta a { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; }
+    @media (max-width: 860px) { .tiles { grid-template-columns: 1fr; } }
+
+    .rules { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6); align-items: start; }
+    .clear { position: relative; background: #fff; border: 1px solid var(--line); padding: 56px; }
+    .clear__box { position: relative; outline: 1px dashed #86642f; outline-offset: 0; padding: 28px; }
+    .clear__box img { width: 100%; }
+    .clear__x { position: absolute; font: italic 500 1.1rem var(--font-display); color: #86642f; }
+    .clear__x--t { top: 2px; left: 50%; transform: translateX(-50%); }
+    .clear__x--l { left: 6px; top: 50%; transform: translateY(-50%); }
+    .sizes { display: flex; align-items: end; gap: var(--s-5); flex-wrap: wrap; margin-top: var(--s-4); }
+    .sizes figure { margin: 0; }
+    .sizes figcaption { font-size: .8125rem; color: var(--ink-soft); margin-top: 8px; }
+    .sizes .s-box { background: #fff; border: 1px solid var(--line); padding: 10px; }
+    @media (max-width: 860px) { .rules { grid-template-columns: 1fr; } .clear { padding: 40px 28px; } }
+
+    .donts { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+    .dont { margin: 0; }
+    .dont__art { aspect-ratio: 1; display: grid; place-items: center; padding: 14%; background: #fff; border: 1px solid var(--line); position: relative; overflow: hidden; }
+    .dont__art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top right, transparent calc(50% - 1px), #b3261e calc(50% - 1px), #b3261e calc(50% + 1px), transparent calc(50% + 1px)); opacity: .7; }
+    .dont__art img { width: 100%; }
+    .dont figcaption { font-size: .875rem; margin-top: 10px; color: var(--ink-soft); }
+    .d-stretch img { transform: scaleX(1.45) scaleY(.8); }
+    .d-rotate img { transform: rotate(-14deg); }
+    .d-color img { filter: invert(14%) sepia(90%) saturate(6000%) hue-rotate(320deg); }
+    .d-busy { background: repeating-linear-gradient(45deg, #e9c5c5 0 12px, #c5d8e9 12px 24px) !important; }
+    .d-shadow img { filter: drop-shadow(6px 6px 0 #86642f); }
+    .d-box { background: #fff; }
+    .d-box img { border: 3px solid #141210; border-radius: 16px; padding: 8px; }
+    .d-font { font-family: "Comic Sans MS", cursive; font-size: 1.4rem; color: #141210; text-align: center; line-height: 1.2; }
+    .d-crop { padding: 0 !important; }
+    .d-crop img { width: 220%; max-width: none; transform: translateX(18%); }
+    @media (max-width: 860px) { .donts { grid-template-columns: 1fr 1fr; } }
+
+    .swatches { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--s-3); }
+    .swatch { border: 1px solid var(--line); background: var(--paper); }
+    .swatch__chip { aspect-ratio: 16 / 9; }
+    .swatch--hero .swatch__chip { aspect-ratio: auto; height: 240px; }
+    .swatch__meta { padding: 16px; display: grid; gap: 4px; }
+    .swatch__meta strong { font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; line-height: 1.2; }
+    .swatch__meta code { font: .875rem/1.5 ui-monospace, Consolas, monospace; color: var(--ink-soft); }
+    .swatch__meta p { font-size: .875rem; color: var(--ink-soft); line-height: 1.5; margin-top: 4px; }
+    .swatches--sm { grid-template-columns: repeat(4, 1fr); margin-top: var(--s-3); }
+    .ratio { display: flex; height: 18px; margin-top: var(--s-5); border: 1px solid var(--line); }
+    .ratio span { display: block; height: 100%; }
+    @media (max-width: 860px) { .swatches { grid-template-columns: 1fr 1fr; } .swatch--hero { grid-column: 1 / -1; } .swatches--sm { grid-template-columns: 1fr 1fr; } }
+
+    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+    .specimen { border: 1px solid var(--line); padding: var(--s-5); background: var(--paper); }
+    .specimen__big { font-size: clamp(5rem, 12vw, 9rem); line-height: 1; margin: var(--s-3) 0; }
+    .specimen__chars { color: var(--ink-soft); word-break: break-all; }
+    .scale { margin-top: var(--s-6); border-top: 1px solid var(--line); }
+    .scale__row { display: grid; grid-template-columns: 140px 1fr; gap: var(--s-4); align-items: baseline; padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
+    .scale__row code { font: .8125rem ui-monospace, Consolas, monospace; color: var(--ink-soft); }
+    @media (max-width: 860px) { .type-grid { grid-template-columns: 1fr; } .scale__row { grid-template-columns: 1fr; gap: 4px; } }
+
+    .voice { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-5); }
+    .voice h3 { font-size: 1.5rem; margin-bottom: 8px; }
+    .voice p { color: var(--ink-soft); font-size: 1rem; }
+    .say { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-6); }
+    .say > div { padding: var(--s-4); border: 1px solid var(--line); background: var(--paper); }
+    .say ul { margin: 12px 0 0; padding-left: 18px; display: grid; gap: 8px; }
+    .say .yes .label { color: #2e7d4f; }
+    .say .no .label { color: #b3261e; }
+    :root[data-theme="dark"] .say .yes .label { color: #6fcf97; }
+    :root[data-theme="dark"] .say .no .label { color: #f28b82; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .say .yes .label { color: #6fcf97; } :root:not([data-theme="light"]) .say .no .label { color: #f28b82; } }
+    @media (max-width: 860px) { .voice { grid-template-columns: 1fr 1fr; } .say { grid-template-columns: 1fr; } }
+
+    .comp { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+    .comp > div { border: 1px solid var(--line); padding: var(--s-5); background: var(--paper); display: grid; gap: var(--s-4); align-content: start; }
+    .comp .row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+    .comp .cap { font-size: .8125rem; color: var(--ink-soft); }
+    @media (max-width: 860px) { .comp { grid-template-columns: 1fr; } }
+
+    .apps { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--s-3); }
+    .app { margin: 0; }
+    .app figcaption { font-size: .875rem; color: var(--ink-soft); margin-top: 10px; }
+    .app--vitrine { grid-column: span 6; }
+    .app--card, .app--post { grid-column: span 3; }
+    .vitrine { position: relative; aspect-ratio: 21 / 9; overflow: hidden;
+      background: linear-gradient(180deg, #2a2724 0%, #1a1816 55%, #24201c 100%); display: grid; place-items: center; }
+    .vitrine::before { content: ""; position: absolute; inset: 0; background:
+      linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .06) 42%, transparent 48%),
+      repeating-linear-gradient(90deg, transparent 0 24%, rgb(0 0 0 / .35) 24% 24.6%); }
+    .vitrine::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: #0f0d0c; border-top: 1px solid #3a342e; }
+    .vitrine img { position: relative; z-index: 1; width: min(560px, 62%); opacity: .95; }
+    .cards { aspect-ratio: 4 / 3; background: var(--paper-2); display: grid; place-items: center; gap: 0; position: relative; overflow: hidden; }
+    .bc { position: absolute; width: 56%; aspect-ratio: 85 / 55; box-shadow: 0 10px 30px rgb(0 0 0 / .18); display: grid; place-items: center; }
+    .bc--front { background: #faf7f2; transform: rotate(-6deg) translate(-18%, -10%); }
+    .bc--front img { width: 72%; }
+    .bc--back { background: #141210; color: #f3eee6; transform: rotate(4deg) translate(20%, 16%); padding: 8%; place-items: end start; font-size: clamp(.5rem, 1.1vw, .75rem); line-height: 1.6; }
+    .bc--back b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 1.6em; color: #c9a46a; letter-spacing: 0; }
+    .post { aspect-ratio: 4 / 3; background: var(--paper-2); display: grid; place-items: center; }
+    .post__sq { width: 64%; aspect-ratio: 1; background: #141210; color: #f3eee6; display: grid; grid-template-rows: auto 1fr auto; padding: 7%; box-shadow: 0 10px 30px rgb(0 0 0 / .18); }
+    .post__sq img { width: 46%; justify-self: center; }
+    .post__sq .t { align-self: center; text-align: center; font-family: var(--font-display); font-size: clamp(1rem, 2.6vw, 1.9rem); line-height: 1.1; }
+    .post__sq .t em { color: #c9a46a; }
+    .post__sq .s { text-align: center; font-size: clamp(.45rem, .9vw, .625rem); letter-spacing: .28em; text-transform: uppercase; color: #c9a46a; }
+    @media (max-width: 860px) { .app--card, .app--post { grid-column: span 6; } .vitrine { aspect-ratio: 4 / 3; } .vitrine img { width: 80%; } }
+
+    .dl { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+    .dl a { display: grid; gap: 6px; padding: var(--s-4); border: 1px solid var(--line); text-decoration: none; background: var(--paper); }
+    .dl a:hover { border-color: var(--ink); }
+    .dl strong { font-weight: 500; }
+    .dl span { font-size: .8125rem; color: var(--ink-soft); }
+    @media (max-width: 860px) { .dl { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="header">
+    <div class="wrap header__in">
+      <a class="logo" href="../" aria-label="Tatiane Garcia Studio de Beleza — voltar ao site">
+        <img class="logo--light" src="../assets/logo-preto.png" alt="" width="809" height="415">
+        <img class="logo--dark" src="../assets/logo-branco.png" alt="" width="809" height="415">
+      </a>
+      <nav id="nav" class="nav" aria-label="Manual da marca">
+        <a href="#logo">Logo</a>
+        <a href="#cores">Cores</a>
+        <a href="#tipografia">Tipografia</a>
+        <a href="#voz">Tom de voz</a>
+        <a href="#aplicacoes">Aplicações</a>
+        <a href="../">Voltar ao site</a>
+      </nav>
+      <div class="header__tools">
+        <a class="btn btn--primary btn--sm" href="#downloads">Downloads</a>
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Alternar tema">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <button class="icon-btn menu-btn" type="button" data-menu aria-controls="nav" aria-expanded="false" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero">
+      <div class="wrap">
+        <span class="label">Manual da marca · v1 · 2026</span>
+        <h1 class="display" style="margin-top:24px">Uma assinatura, <em class="italic" style="color:var(--gold)">não</em> um logotipo.</h1>
+        <p class="lead" style="margin-top:32px">A marca Tatiane Garcia nasce da própria assinatura: um traço feito à mão, contínuo e confiante. Este guia mostra como usá-la para que ela pareça a mesma em qualquer lugar, da vitrine ao story.</p>
+        <ol class="toc">
+          <li><a href="#logo"><span>01</span>Logo</a></li>
+          <li><a href="#uso"><span>02</span>Regras de uso</a></li>
+          <li><a href="#cores"><span>03</span>Cores</a></li>
+          <li><a href="#tipografia"><span>04</span>Tipografia</a></li>
+          <li><a href="#voz"><span>05</span>Tom de voz</a></li>
+          <li><a href="#componentes"><span>06</span>Componentes</a></li>
+          <li><a href="#aplicacoes"><span>07</span>Aplicações</a></li>
+          <li><a href="#downloads"><span>08</span>Downloads</a></li>
+        </ol>
+        <div class="hero-logo"><img src="../assets/logo-preto.png" alt="Logo Tatiane Garcia Studio de Beleza: assinatura caligráfica com a linha STUDIO DE BELEZA" width="809" height="415"></div>
+      </div>
+    </section>
+
+    <section id="logo" class="section section--alt">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">01 · Logo</span>
+            <h2 class="h1">Assinatura + descritor.</h2>
+          </div>
+          <div class="prose">
+            <p>O logo tem duas partes que nunca se separam: a <strong>assinatura</strong> “Tatiane. Garcia.” em traço caligráfico, e o <strong>descritor</strong> “STUDIO DE BELEZA” em caixa alta espaçada. O traço horizontal longo que corta o nome é parte do desenho e não pode ser removido.</p>
+          </div>
+        </div>
+        <div class="tiles">
+          <div class="tile">
+            <div class="tile__art" style="background:#faf7f2"><img src="../assets/logo-preto.png" alt="Logo preto sobre fundo marfim" width="809" height="415"></div>
+            <div class="tile__meta"><span>Principal · preto</span><a class="link" href="../assets/logo-preto.png" download>PNG</a></div>
+          </div>
+          <div class="tile">
+            <div class="tile__art" style="background:#141210"><img src="../assets/logo-branco.png" alt="Logo marfim sobre fundo preto" width="809" height="415"></div>
+            <div class="tile__meta"><span>Negativo · marfim</span><a class="link" href="../assets/logo-branco.png" download>PNG</a></div>
+          </div>
+          <div class="tile">
+            <div class="tile__art" style="background:#f1ebe1"><img src="../assets/logo-dourado.png" alt="Logo dourado sobre fundo areia" width="809" height="415"></div>
+            <div class="tile__meta"><span>Especial · dourado</span><a class="link" href="../assets/logo-dourado.png" download>PNG</a></div>
+          </div>
+        </div>
+        <p class="small" style="margin-top:24px">Use a versão <strong>preta</strong> sempre que possível. A <strong>marfim</strong> é para fundos escuros e fotos escuras. A <strong>dourada</strong> é reservada a peças especiais: convites, datas comemorativas, embalagens.</p>
+      </div>
+    </section>
+
+    <section id="uso" class="section">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">02 · Regras de uso</span>
+            <h2 class="h1">Espaço para respirar.</h2>
+          </div>
+          <p class="lead">Uma assinatura precisa de papel em branco ao redor. Quanto mais espaço, mais sofisticada ela parece.</p>
+        </div>
+        <div class="rules">
+          <div>
+            <div class="clear">
+              <span class="clear__x clear__x--t">x</span>
+              <span class="clear__x clear__x--l">x</span>
+              <div class="clear__box"><img src="../assets/logo-preto.png" alt="Logo com a área de proteção marcada em linha tracejada" width="809" height="415"></div>
+            </div>
+            <p class="small" style="margin-top:16px"><strong>Área de proteção:</strong> mantenha livre, em todos os lados, uma distância <em>x</em> igual à altura do “G” de Garcia acima da linha de base. Nada de texto, borda ou elemento dentro dela.</p>
+          </div>
+          <div>
+            <h3 class="h2">Tamanho mínimo</h3>
+            <p class="small" style="margin-top:8px">Abaixo disso o descritor “STUDIO DE BELEZA” deixa de ser legível.</p>
+            <div class="sizes">
+              <figure><div class="s-box"><img src="../assets/logo-preto.png" alt="" width="240" style="width:240px"></div><figcaption>Ideal · 240px+</figcaption></figure>
+              <figure><div class="s-box"><img src="../assets/logo-preto.png" alt="" width="120" style="width:120px"></div><figcaption>Mínimo digital · 120px</figcaption></figure>
+            </div>
+            <p class="small" style="margin-top:24px">Impresso: no mínimo <strong>35 mm</strong> de largura. Em peças menores (etiqueta, carimbo), use só a assinatura, sem o descritor, e no mínimo 20 mm. <span class="todo">[Versão só-assinatura ainda não existe: pedir ao designer]</span></p>
+          </div>
+        </div>
+
+        <h3 class="h2" style="margin:72px 0 24px">Nunca faça</h3>
+        <div class="donts">
+          <figure class="dont"><div class="dont__art d-stretch"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Esticar ou achatar</figcaption></figure>
+          <figure class="dont"><div class="dont__art d-rotate"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Girar ou inclinar</figcaption></figure>
+          <figure class="dont"><div class="dont__art d-color"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Trocar a cor fora da paleta</figcaption></figure>
+          <figure class="dont"><div class="dont__art d-busy"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Aplicar sobre fundo poluído</figcaption></figure>
+          <figure class="dont"><div class="dont__art d-shadow"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Adicionar sombra ou contorno</figcaption></figure>
+          <figure class="dont"><div class="dont__art d-box"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Prender dentro de caixas</figcaption></figure>
+          <figure class="dont"><div class="dont__art"><span class="d-font">Tatiane Garcia<br>studio</span></div><figcaption>Reescrever o nome com outra fonte</figcaption></figure>
+          <figure class="dont"><div class="dont__art d-crop"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div><figcaption>Cortar parte da assinatura</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="cores" class="section section--alt">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">03 · Cores</span>
+            <h2 class="h1">Tinta, papel e um toque de ouro.</h2>
+          </div>
+          <p class="lead">A paleta vem do próprio logo: tinta preta sobre papel. O dourado é o único acento e aparece pouco, como uma joia.</p>
+        </div>
+        <div class="swatches">
+          <div class="swatch swatch--hero">
+            <div class="swatch__chip" style="background:#141210"></div>
+            <div class="swatch__meta"><strong>Tinta</strong><code>#141210 · RGB 20 18 16</code><p>Logo, títulos, texto e botão principal.</p></div>
+          </div>
+          <div class="swatch swatch--hero">
+            <div class="swatch__chip" style="background:#faf7f2; border-bottom:1px solid #e2d9cb"></div>
+            <div class="swatch__meta"><strong>Papel</strong><code>#FAF7F2 · RGB 250 247 242</code><p>Fundo principal. Nunca branco puro na tela.</p></div>
+          </div>
+          <div class="swatch swatch--hero">
+            <div class="swatch__chip" style="background:#86642f"></div>
+            <div class="swatch__meta"><strong>Ouro</strong><code>#86642F · RGB 134 100 47</code><p>Único acento: detalhes, números, links.</p></div>
+          </div>
+        </div>
+        <div class="swatches swatches--sm">
+          <div class="swatch"><div class="swatch__chip" style="background:#f1ebe1"></div><div class="swatch__meta"><strong>Areia</strong><code>#F1EBE1</code><p>Faixas alternadas, cartões.</p></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:#e2d9cb"></div><div class="swatch__meta"><strong>Linho</strong><code>#E2D9CB</code><p>Bordas e divisores.</p></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:#5a534b"></div><div class="swatch__meta"><strong>Grafite</strong><code>#5A534B</code><p>Texto secundário.</p></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:#c9a46a"></div><div class="swatch__meta"><strong>Ouro claro</strong><code>#C9A46A</code><p>Ouro sobre fundos escuros.</p></div></div>
+        </div>
+        <p class="small" style="margin-top:40px">Proporção de uso em uma peça:</p>
+        <div class="ratio" role="img" aria-label="Proporção: 60% papel, 25% tinta, 10% areia, 5% ouro">
+          <span style="width:60%;background:#faf7f2"></span><span style="width:25%;background:#141210"></span><span style="width:10%;background:#f1ebe1"></span><span style="width:5%;background:#86642f"></span>
+        </div>
+        <p class="small" style="margin-top:8px">60% papel · 25% tinta · 10% areia · 5% ouro</p>
+      </div>
+    </section>
+
+    <section id="tipografia" class="section">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">04 · Tipografia</span>
+            <h2 class="h1">Uma serifa, uma geométrica.</h2>
+          </div>
+          <p class="lead">A serifa clássica conversa com a elegância da assinatura; a geométrica em caixa alta repete o descritor do logo. Ambas são gratuitas no Google Fonts.</p>
+        </div>
+        <div class="type-grid">
+          <div class="specimen">
+            <span class="label label--plain">Títulos</span>
+            <div class="specimen__big" style="font-family:var(--font-display)">Aa <em class="italic" style="color:var(--gold)">Aa</em></div>
+            <h3 class="h2">Cormorant Garamond</h3>
+            <p class="small">Medium 500 · Semibold 600 · Italic 500 — títulos, citações e números.</p>
+            <p class="specimen__chars" style="font-family:var(--font-display); margin-top:16px; font-size:1.25rem">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+          </div>
+          <div class="specimen">
+            <span class="label label--plain">Textos e rótulos</span>
+            <div class="specimen__big" style="font-family:var(--font-body); font-weight:400">Aa</div>
+            <h3 class="h2">Jost</h3>
+            <p class="small">Regular 400 · Medium 500 — textos, botões e rótulos em caixa alta com espaçamento largo.</p>
+            <p class="specimen__chars" style="margin-top:16px">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+          </div>
+        </div>
+        <div class="scale">
+          <div class="scale__row"><code>Display · 104px</code><span class="display" style="font-size:clamp(2.5rem,7vw,6.5rem)">Autoestima</span></div>
+          <div class="scale__row"><code>Título · 64px</code><span class="h1">Especialista em cabelos</span></div>
+          <div class="scale__row"><code>Subtítulo · 28px</code><span class="h2">Realinhamento com movimento natural</span></div>
+          <div class="scale__row"><code>Texto · 17px</code><span>Cada atendimento começa olhando para você: o seu fio, a sua rotina e o que você quer sentir.</span></div>
+          <div class="scale__row"><code>Rótulo · 12px</code><span class="label label--plain" style="color:var(--ink)">Studio de beleza · Cachoeiras de Macacu</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="voz" class="section section--alt">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">05 · Tom de voz</span>
+            <h2 class="h1">Como a Tatiane fala.</h2>
+          </div>
+          <p class="lead">Próxima como uma amiga, segura como quem tem 30 anos de profissão. Nunca apressada, nunca exagerada.</p>
+        </div>
+        <div class="voice">
+          <div><h3>Acolhedora</h3><p>Fala com a cliente pelo que ela sente, não só pelo que o cabelo precisa.</p></div>
+          <div><h3>Experiente</h3><p>Explica com clareza e confiança; a experiência aparece no cuidado, não em jargão.</p></div>
+          <div><h3>Elegante</h3><p>Frases curtas, sem excesso de exclamações, emojis ou caixa alta gritando.</p></div>
+          <div><h3>Local</h3><p>Orgulho de Cachoeiras de Macacu; trata a cliente como alguém da cidade.</p></div>
+        </div>
+        <div class="say">
+          <div class="yes">
+            <span class="label">Assim</span>
+            <ul>
+              <li>“Seu horário está garantido. Te espero no studio.”</li>
+              <li>“A agenda de dezembro abre dia 19. Garanta o seu horário com antecedência.”</li>
+              <li>“Vamos olhar o seu fio antes de decidir o tratamento.”</li>
+            </ul>
+          </div>
+          <div class="no">
+            <span class="label">Não assim</span>
+            <ul>
+              <li>“CORRE!!! ÚLTIMAS VAGAS 🔥🔥🔥”</li>
+              <li>“O melhor salão do Brasil, resultado garantido 100%.”</li>
+              <li>“Promoção imperdível, só hoje, chama no direct!!”</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="componentes" class="section">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">06 · Componentes</span>
+            <h2 class="h1">Peças do site.</h2>
+          </div>
+          <p class="lead">Os mesmos elementos usados no site, para manter tudo consistente em novas páginas.</p>
+        </div>
+        <div class="comp">
+          <div>
+            <span class="label label--plain">Botões</span>
+            <div class="row"><a class="btn btn--primary" href="#componentes">Principal</a><a class="btn btn--ghost" href="#componentes">Secundário</a></div>
+            <p class="cap">Pílula, caixa alta espaçada. Hover do principal vira ouro. Um botão principal por seção.</p>
+          </div>
+          <div>
+            <span class="label label--plain">Rótulo e link</span>
+            <div class="row"><span class="label">Serviços</span></div>
+            <div class="row"><a class="link" href="#componentes">Link com sublinhado dourado</a></div>
+            <p class="cap">Rótulo sempre em ouro, com traço de 32px antes.</p>
+          </div>
+          <div>
+            <span class="label label--plain">Cartão de serviço</span>
+            <article class="service"><span class="service__n">01</span><h3 class="h2">Cortes</h3><p>Sem caixa nem sombra: um fio superior, número em itálico dourado.</p></article>
+          </div>
+          <div>
+            <span class="label label--plain">Forma</span>
+            <p class="cap">Fotos e cartões com cantos retos (editorial). Só botões e chips são arredondados. Sem sombras; a profundidade vem de linhas finas e fundos alternados.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="aplicacoes" class="section section--alt">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">07 · Aplicações</span>
+            <h2 class="h1">A marca no mundo.</h2>
+          </div>
+          <p class="lead">Exemplos de referência. Medidas finais de impressão devem ser confirmadas com a gráfica.</p>
+        </div>
+        <div class="apps">
+          <figure class="app app--vitrine">
+            <div class="vitrine"><img src="../assets/logo-branco.png" alt="Logo marfim aplicado em adesivo na vitrine de vidro" width="809" height="415"></div>
+            <figcaption>Vitrine: adesivo em vinil recortado, cor marfim, centralizado na altura dos olhos.</figcaption>
+          </figure>
+          <figure class="app app--card">
+            <div class="cards">
+              <div class="bc bc--front"><img src="../assets/logo-preto.png" alt="" width="809" height="415"></div>
+              <div class="bc bc--back"><div><b>Tatiane Garcia</b>(21) 99923-3553<br>@tatianegarciastudio<br>Av. Gov. Roberto Silveira, 81 · Loja 2</div></div>
+            </div>
+            <figcaption>Cartão de visita 85×55 mm: frente papel com logo preto, verso tinta com dados em marfim.</figcaption>
+          </figure>
+          <figure class="app app--post">
+            <div class="post">
+              <div class="post__sq">
+                <img src="../assets/logo-branco.png" alt="" width="809" height="415">
+                <div class="t">Agenda de<br><em class="italic">dezembro</em> aberta</div>
+                <div class="s">Agende pelo WhatsApp</div>
+              </div>
+            </div>
+            <figcaption>Post do Instagram: fundo tinta, título em Cormorant, um único detalhe em ouro.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="downloads" class="section">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <span class="label">08 · Downloads</span>
+            <h2 class="h1">Arquivos da marca.</h2>
+          </div>
+          <p class="lead">PNG com fundo transparente, prontos para redes sociais e web. Para impressão grande, peça o vetor (SVG/PDF) ao designer. <span class="todo">[vetor pendente]</span></p>
+        </div>
+        <div class="dl">
+          <a href="../assets/logo-preto.png" download><strong>Logo preto</strong><span>PNG transparente · 809×415</span></a>
+          <a href="../assets/logo-branco.png" download><strong>Logo marfim</strong><span>PNG transparente · 809×415</span></a>
+          <a href="../assets/logo-dourado.png" download><strong>Logo dourado</strong><span>PNG transparente · 809×415</span></a>
+          <a href="../assets/logo-original.jpg" download><strong>Logo original</strong><span>JPG fundo branco · 1280×1280</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__bottom" style="margin-top:0; border-top:0; padding-top:0">
+        <span>© <span data-year>2026</span> Tatiane Garcia Studio de Beleza · Manual da marca</span>
+        <a href="../">Voltar ao site</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
