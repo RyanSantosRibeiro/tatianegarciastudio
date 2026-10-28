@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/styles.css">
   <script src="../assets/site.js"></script>
+  <script src="../assets/logos-data.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -210,7 +211,10 @@
     var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
     // *texto* vira itálico dourado
     var em = function (s) { return esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>"); };
-    var logo = function (bg) { return '<img class="p-logo" src="../assets/' + (bg === "light" ? "logo-preto" : "logo-branco") + '.png" alt="">'; };
+    var logo = function (bg) {
+      var src = (window.TG_LOGOS && window.TG_LOGOS[bg]) || ("../assets/" + (bg === "light" ? "logo-preto" : "logo-branco") + ".png");
+      return '<img class="p-logo" src="' + src + '" alt="">';
+    };
 
     var TEMPLATES = {
       agenda: {
@@ -492,7 +496,7 @@
       var el = makePost(); host.appendChild(el);
       var imgs = [].slice.call(el.querySelectorAll("img")).map(function (i) { return i.complete ? Promise.resolve() : new Promise(function (r) { i.onload = i.onerror = r; }); });
       return Promise.all([document.fonts ? document.fonts.ready : null].concat(imgs)).then(function () {
-        return html2canvas(el, { scale: 1, backgroundColor: null, useCORS: true, logging: false });
+        return html2canvas(el, { scale: 1, backgroundColor: null, logging: false });
       }).then(function (c) { host.innerHTML = ""; return c; });
     }
     function busy(on, msg) {
@@ -504,7 +508,10 @@
       capture().then(function (c) {
         var a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download = fileName("png"); a.click();
         busy(false, "PNG baixado (1080 × " + c.height + ").");
-      }).catch(function () { busy(false, "Não foi possível gerar a imagem. Tente de novo."); });
+      }).catch(function (err) {
+        console.error("Erro ao gerar PNG:", err);
+        busy(false, "Não foi possível gerar a imagem. Tente de novo.");
+      });
     });
     document.getElementById("dl-pdf").addEventListener("click", function () {
       busy(true, "Gerando PDF…");
@@ -513,7 +520,10 @@
         pdf.addImage(c.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, c.width, c.height);
         pdf.save(fileName("pdf"));
         busy(false, "PDF baixado.");
-      }).catch(function () { busy(false, "Não foi possível gerar o PDF. Tente de novo."); });
+      }).catch(function (err) {
+        console.error("Erro ao gerar PDF:", err);
+        busy(false, "Não foi possível gerar o PDF. Tente de novo.");
+      });
     });
 
     buildForm(); render();
